@@ -1,12 +1,23 @@
 <?php
-add_action('wp_enqueue_scripts', 'load_bootstrap');
+//CSS && JS
 
-function load_bootstrap()
+add_action('wp_enqueue_scripts', 'load_scripts');
+
+function load_scripts()
 {
     wp_enqueue_script('bootstrap-js', get_template_directory_uri().'/assets/js/bootstrap.js');
     wp_enqueue_style('bootstrap-css', get_template_directory_uri().'/assets/css/bootstrap.css');
-    wp_enqueue_style('default-css', get_template_directory_uri().'/assets/css/style.css');
+
+    wp_enqueue_style('default-css', get_template_directory_uri().'/style.css');
+
+    wp_enqueue_style('slick-css', get_template_directory_uri().'/assets/slick/slick.css');
+    wp_enqueue_style('slick-theme', get_template_directory_uri().'/assets/slick/slick-theme.css');
+    wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-1.11.0.min.js', NULL, '1.11.0', false);
+    wp_enqueue_script('jquery-migrate', 'https://code.jquery.com/jquery-migrate-1.2.1.min.js');
+    wp_enqueue_script('slick-js', get_template_directory_uri().'/assets/slick/slick.js');
 }
+
+//New post
 
 add_action( 'init', 'register_post_games' );
 
@@ -24,6 +35,8 @@ function register_post_games()
     register_post_type('Games', $args);
 }
 
+//Meta boxes
+
 add_action('add_meta_boxes', 'wp_game_genre_meta_box');
 add_action('save_post', 'save_game_genre_meta_box');
 
@@ -40,7 +53,7 @@ function wp_game_genre_meta_box()
 ?>
 
 <?php
-function html_game_genre_meta_box($post)
+function render_game_genre_meta_box($post)
 {
     $game_genre = get_post_meta( $post->ID, 'game_genre', true );
 ?>
@@ -87,7 +100,7 @@ function wp_release_year_meta_box()
 ?>
 
 <?php
-function html_release_year_meta_box($post)
+function render_release_year_meta_box($post)
 {
     $release_year = get_post_meta( $post->ID, 'release_year', true );
 ?>
@@ -109,15 +122,29 @@ function save_release_year_meta_box( $post_id ) {
     }
 }
 
-add_action('init', 'register_taxonomies');
+//Taxonomy
 
-function register_taxonomies()
+add_action('init', 'register_developer_taxonomy');
+
+function register_developer_taxonomy()
 {
-    register_taxonomy(
-        'Game genre',
-        'Games',
-    );
+    register_taxonomy( 'developer_taxonomy', 'games', [ 
+		'label'                 => '', // определяется параметром $labels->name
+		'labels'                => [
+			'name'              => 'Developer',
+			'singular_name'     => 'Developer',
+			'search_items'      => 'Search developer',
+			'all_items'         => 'All developers',
+			'view_item '        => 'View developer',
+			'edit_item'         => 'Edit developer',
+			'update_item'       => 'Update developer',
+			'add_new_item'      => 'Add New developer',
+			'new_item_name'     => 'New developer Name',
+			'menu_name'         => 'Developers',
+		],
+	] );
 }
+
 
 // function themename_widgets_init() 
 // {
